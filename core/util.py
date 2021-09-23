@@ -12,11 +12,19 @@ import os
 os.system('adb kill-server')
 os.system('adb start-server')
 
+# 引入 uiautomator2 截图
+import uiautomator2 as u2
+d = u2.connect()
+
+RESIZE_X = 1
+RESIZE_Y = 1
+EDGE_X = 0
+EDGE_Y = 0
 
 def tap(crd: (int, int)):
     cmdTap = 'adb shell input tap {x} {y}'.format(
-        x=crd[0],
-        y=crd[1]
+        x=crd[0] * RESIZE_X + EDGE_X,
+        y=crd[1] * RESIZE_Y + EDGE_Y
     )
     logging.info(cmdTap)
     os.system(cmdTap)
@@ -24,10 +32,10 @@ def tap(crd: (int, int)):
 
 def swipe(org: (int, int), tar: (int, int), delay):
     cmdSwipe = 'adb shell input swipe {x1} {y1} {x2} {y2} {delay1}'.format(
-        x1=org[0],
-        y1=org[1],
-        x2=tar[0],
-        y2=tar[1],
+        x1=org[0] * RESIZE_X + EDGE_X,
+        y1=org[1] * RESIZE_Y + EDGE_Y,
+        x2=tar[0] * RESIZE_X + EDGE_X,
+        y2=tar[1] * RESIZE_Y + EDGE_Y,
         delay1=int(delay*1000)
     )
     logging.info(cmdSwipe)
@@ -52,12 +60,23 @@ def split(path: str, edge: (int, int)):
     out.save("tmp.png")
 
 
+def set_screen(edge: (int, int)):
+    global RESIZE_X, RESIZE_Y, EDGE_X, EDGE_Y
+    EDGE_X, EDGE_Y = edge
+    img = d.screenshot()
+    RESIZE_X = (img.size[0] - EDGE_X)/1920
+    RESIZE_Y = (img.size[1] - EDGE_Y)/1080
+
 def get_sh(edge: (int, int)):
     # screenshot()
     #split(img, edge)
-    img = screencap()
+    #img = screencap()
+    # 调用 uiautomator2 截图
+    img = d.screenshot(format='opencv')
     PIL_img = Image.fromarray(img)
-    out = PIL_img.crop((edge[0], edge[1], edge[0]+1920, edge[1]+1080))
+    # 裁剪+缩放到 1920x1080
+    out = PIL_img.crop((0, EDGE_Y, PIL_img.size[0], PIL_img.size[1]-EDGE_Y))
+    out = out.resize((1920, 1080))
     out_array = np.array(out)
     return out_array
 

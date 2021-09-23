@@ -30,7 +30,8 @@ class Automata():
             shiki = Automata("assets/checkpoint.png", "assets/qp.png")
             bb = Automata("assets/checkpoint.png", "assets/qp.png", sft=(248, 0), apl=(1, "silver"))
         """
-        self.shifts = sft
+        util.set_screen(sft)
+        self.shifts = (0, 0)
         self.checkpoint = ckp
         self.support = spt
         self.counts = apl[0]  # apple counts
@@ -95,6 +96,7 @@ class Automata():
             select_servant_skill(3, 2) # skill w/ target servants
         """
         while not util.standby(util.get_sh(self.shifts), crds.IMAGE["attack"]):
+            self.tap((1400, 100), 30) # 加快载入速度
             time.sleep(0.2)
         self.tap(crds.SERVANT_SKILLS[skill-1], 5, 5)
         time.sleep(1)
@@ -465,7 +467,8 @@ class Automata():
             sft: (int, int)
         Coordinate shifts in (x, y). When there are blues straps at the edges.
         """
-        self.shifts = sft
+        util.set_screen(sft)
+        self.shifts = (0, 0)
 
     def reset_checkpoint(self, ckp: str):
         """ Reset Checkpoint
