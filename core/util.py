@@ -16,15 +16,14 @@ os.system('adb start-server')
 import uiautomator2 as u2
 d = u2.connect()
 
-RESIZE_X = 1
-RESIZE_Y = 1
+RESIZE = 1
 EDGE_X = 0
 EDGE_Y = 0
 
 def tap(crd: (int, int)):
     cmdTap = 'adb shell input tap {x} {y}'.format(
-        x=crd[0] * RESIZE_X + EDGE_X,
-        y=crd[1] * RESIZE_X + EDGE_Y
+        x=crd[0] * RESIZE + EDGE_X,
+        y=crd[1] * RESIZE + EDGE_Y
     )
     logging.info(cmdTap)
     os.system(cmdTap)
@@ -32,10 +31,10 @@ def tap(crd: (int, int)):
 
 def swipe(org: (int, int), tar: (int, int), delay):
     cmdSwipe = 'adb shell input swipe {x1} {y1} {x2} {y2} {delay1}'.format(
-        x1=org[0] * RESIZE_X + EDGE_X,
-        y1=org[1] * RESIZE_X + EDGE_Y,
-        x2=tar[0] * RESIZE_X + EDGE_X,
-        y2=tar[1] * RESIZE_X + EDGE_Y,
+        x1=org[0] * RESIZE + EDGE_X,
+        y1=org[1] * RESIZE + EDGE_Y,
+        x2=tar[0] * RESIZE + EDGE_X,
+        y2=tar[1] * RESIZE + EDGE_Y,
         delay1=int(delay*1000)
     )
     logging.info(cmdSwipe)
@@ -60,12 +59,16 @@ def split(path: str, edge: (int, int)):
     out.save("tmp.png")
 
 
-def set_screen(edge: (int, int)):
-    global RESIZE_X, RESIZE_Y, EDGE_X, EDGE_Y
-    EDGE_X, EDGE_Y = edge
+def auto_set_screen():
+    global RESIZE, EDGE_X, EDGE_Y
     img = d.screenshot()
-    RESIZE_X = (img.size[0] - EDGE_X)/1920
-    RESIZE_Y = (img.size[1] - EDGE_Y)/1080
+    x, y = img.size
+    if x/y > 1920/1080:
+        RESIZE = y/1080
+        EDGE_X, EDGE_Y = (x-y*1920/1080)/2, 0
+    else:
+        RESIZE = x/1920
+        EDGE_X, EDGE_Y = (0, (y-x*1080/1920)/2)
 
 def get_sh(edge: (int, int)):
     # screenshot()

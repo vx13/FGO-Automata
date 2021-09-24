@@ -30,7 +30,7 @@ class Automata():
             shiki = Automata("assets/checkpoint.png", "assets/qp.png")
             bb = Automata("assets/checkpoint.png", "assets/qp.png", sft=(248, 0), apl=(1, "silver"))
         """
-        util.set_screen(sft)
+        util.auto_set_screen()
         self.shifts = (0, 0)
         self.checkpoint = ckp
         self.support = spt
