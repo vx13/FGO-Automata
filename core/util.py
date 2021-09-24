@@ -24,7 +24,7 @@ EDGE_Y = 0
 def tap(crd: (int, int)):
     cmdTap = 'adb shell input tap {x} {y}'.format(
         x=crd[0] * RESIZE_X + EDGE_X,
-        y=crd[1] * RESIZE_Y + EDGE_Y
+        y=crd[1] * RESIZE_X + EDGE_Y
     )
     logging.info(cmdTap)
     os.system(cmdTap)
@@ -33,9 +33,9 @@ def tap(crd: (int, int)):
 def swipe(org: (int, int), tar: (int, int), delay):
     cmdSwipe = 'adb shell input swipe {x1} {y1} {x2} {y2} {delay1}'.format(
         x1=org[0] * RESIZE_X + EDGE_X,
-        y1=org[1] * RESIZE_Y + EDGE_Y,
+        y1=org[1] * RESIZE_X + EDGE_Y,
         x2=tar[0] * RESIZE_X + EDGE_X,
-        y2=tar[1] * RESIZE_Y + EDGE_Y,
+        y2=tar[1] * RESIZE_X + EDGE_Y,
         delay1=int(delay*1000)
     )
     logging.info(cmdSwipe)
