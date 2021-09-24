@@ -59,7 +59,7 @@ class Automata():
             time.sleep(0.2)
         # tap ATTACK
         self.tap(crds.ATTACK, 100, 100)
-        time.sleep(1.3)
+        time.sleep(1.5)
         while len(cards) < 3:
             x = random.randrange(1, 5)  # in interval [1, 5]
             if x in cards:
@@ -201,6 +201,7 @@ class Automata():
 
         """
         self.toggle_master_skill()
+        time.sleep(0.1)
         self.tap(crds.MASTER_SKILLS[skill-1], 8, 8)
         if org != 0 and tar == 0:
             self.select_servant(org)

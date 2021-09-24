@@ -26,7 +26,8 @@ def tap(crd: (int, int)):
         y=crd[1] * RESIZE + EDGE_Y
     )
     logging.info(cmdTap)
-    os.system(cmdTap)
+    #os.system(cmdTap)
+    d.click(crd[0] * RESIZE + EDGE_X, crd[1] * RESIZE + EDGE_Y)
 
 
 def swipe(org: (int, int), tar: (int, int), delay):
@@ -39,6 +40,10 @@ def swipe(org: (int, int), tar: (int, int), delay):
     )
     logging.info(cmdSwipe)
     os.system(cmdSwipe)
+    #d.swipe(org[0] * RESIZE + EDGE_X, org[1] * RESIZE + EDGE_Y,
+    #        tar[0] * RESIZE + EDGE_X, tar[1] * RESIZE + EDGE_Y,
+    #        int(delay*1000)
+    #    )
 
 
 # nouse 舊版截圖
