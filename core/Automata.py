@@ -5,14 +5,14 @@ from core.Dynamica import Dynamica
 
 
 class Automata():
-    def __init__(self, ckp: str, spt: str, sft=(0, 0), apl: (int, str) = (0, "")):
+    def __init__(self, ckp: str, spt: [str], sft=(0, 0), apl: (int, str) = (0, "")):
         """
         Parameters
         ----------
             ckp: str
         Path to the checkpoint image
 
-            spt: str
+            spt: [str]
         Path to the support image
 
             sft: (int, int), optional
@@ -237,30 +237,33 @@ class Automata():
                 raise Exception("Out of AP!")
         print("[INFO] Checkpoint selected.")
 
-    def select_support(self, spt: str = None):
+    def select_support(self, spt: [str] = None):
         """ Select Support
 
         Parameters
         ----------
-            spt: str, optional
+            spt: [str], optional
         Override the initially set support.
         """
         time.sleep(0.3)
         if spt is None:
             spt = self.support
-        x = util.get_crd(util.get_sh(self.shifts), spt)
+        for s in spt:
+            x = util.get_crd(util.get_sh(self.shifts), s)
+            if len(x) != 0:
+                break
         if len(x) == 0:
             self.tap((860, 430), 300, 100)
         else:
             self.tap(x[0])
 
     # advance support
-    def advance_support(self, spt: str = None, tms: int = 3):
+    def advance_support(self, spt: [str] = None, tms: int = 3):
         """ Advance Support Selection
 
         Parameters
         ----------
-            spt: str, optional
+            spt: [str], optional
         Override the initially set support.
 
             tms: int, optional
@@ -274,7 +277,10 @@ class Automata():
         time.sleep(0.3)
         if spt is None:
             spt = self.support
-        x = util.get_crd(util.get_sh(self.shifts), spt)
+        for s in spt:
+            x = util.get_crd(util.get_sh(self.shifts), s)
+            if len(x) != 0:
+                break
         counter = False
         times = tms
         while len(x) == 0:
@@ -292,8 +298,11 @@ class Automata():
                 else:
                     time.sleep(3)
             time.sleep(0.5)
-            x = util.get_crd(util.get_sh(self.shifts), spt)
-        self.tap(x[0])
+            for s in spt:
+                x = util.get_crd(util.get_sh(self.shifts), s)
+                if len(x) != 0:
+                    break
+        self.tap((x[0][0]+50, x[0][1]+50))
         print("[INFO] Support selected.")
 
     def update_support(self) -> bool:
@@ -479,11 +488,11 @@ class Automata():
         """
         self.checkpoint = ckp
 
-    def reset_support(self, spt: str):
+    def reset_support(self, spt: [str]):
         """ Reset Support
         Parameters
         ----------
-            spt: (int, int)
+            spt: [str]
         Path to the support image
         """
         self.support = spt
